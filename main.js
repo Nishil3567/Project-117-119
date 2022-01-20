@@ -26,5 +26,42 @@ function preload(){
     classifier = ml5.imageClassifier('DoodleNet');
 }
 function classifyCanvas(){
-    classifier.classify(canvas , gotResult)
+    classifier.classify(canvas , gotResults);
+}
+function draw(){
+    strokeWeight(13);
+    stroke(0);
+    if(mouseIsPressed){
+        line(pmouseX,pmouseY,mouseX,mouseY);
+    }
+    check_skech();
+    if(drawn_sketch == sketch){
+        answer_holder = "set";
+        score++ ;
+        document.getElementById("score").innerHTML = "score"+score;
+    }
+}
+function gotResults(error , results){
+    if(error){
+        console.error(error);
+    }else{
+        console.log(results);
+        drawn_sketch = results[0].label; 
+        document.getElementById('drawnSketch').innerHTML = "Your Sketch: " + results[0].label;
+
+        document.getElementById('Confidence').innerHTML = "Confidence: " + Math.round(results[0].confidence*100) + " %";
+    }
+}
+
+function check_skech(){
+    timer_counter++;
+    document.getElementById("time").innerHTML = "Timer:=" + timer_counter;
+    if(timer_counter > 600){
+        timer_counter = "0";
+        timer_check = "Completed";
+    }
+    if(timer_check == "Completed" || answer_holder == "set"){
+        timer_check = "";
+        answer_holder = "";
+    }
 }
